@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Golam Muktadir — Web Developer</title>
+
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+ 
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+
+      
+      <a href="#home" class="nav-logo" aria-label="Go to home">
+        <span class="logo-bracket">&lt;</span>Muktadir<span class="logo-bracket">/&gt;</span>
+      </a>
+
+      
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+     
+      <ul class="nav-links" id="navLinks" role="list">
+        <li><a href="#home"    class="nav-link active">Home</a></li>
+        <li><a href="#about"   class="nav-link">About</a></li>
+        <li><a href="#skills"  class="nav-link">Skills</a></li>
+        <li><a href="#projects"class="nav-link">Projects</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  
+  <section class="hero" id="home" aria-label="Hero section">
+
+   
+    <div class="hero-grid" aria-hidden="true"></div>
+
+    
+    <div class="orb orb-1" aria-hidden="true"></div>
+    <div class="orb orb-2" aria-hidden="true"></div>
+
+    <div class="hero-container">
+
+     
+      <div class="hero-text">
+        <p class="hero-greeting reveal">Hello, I'm</p>
+        <h1 class="hero-name reveal">Golam<br /><span class="accent">Muktadir</span></h1>
+        <p class="hero-tagline reveal">Web Developer &amp; WordPress Enthusiast</p>
+        <p class="hero-sub reveal">
+          Crafting beautiful, responsive websites and seamless digital experiences
+          from Rangpur, Bangladesh.
+        </p>
+
+        
+        <div class="hero-btns reveal">
+          <a href="#" class="btn btn-primary" download>
+            <i class="fa-solid fa-download"></i> Download CV
+          </a>
+          <a href="#contact" class="btn btn-outline">
+            <i class="fa-solid fa-paper-plane"></i> Contact Me
+          </a>
+        </div>
+
+        
+        <div class="hero-social reveal">
+          <a href="#" class="social-icon" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      
+      <div class="hero-photo reveal">
+        <div class="photo-ring" aria-hidden="true"></div>
+        <div class="photo-ring photo-ring-2" aria-hidden="true"></div>
+        <img
+          src="images/my_photo.png"
+          alt="Golam Muktadir — profile photo"
+          class="profile-img"
+          loading="eager"
+        />
+        
+        <div class="hero-badge" aria-hidden="true">
+          <span class="badge-num">3+</span>
+          <span class="badge-text">Years<br/>Experience</span>
+        </div>
+      </div>
+
+    </div>
+
+  
+    <a href="#about" class="scroll-down" aria-label="Scroll to About section">
+      <span class="scroll-dot"></span>
+    </a>
+  </section>
+
+  
+  <section class="about section" id="about" aria-label="About Me">
+    <div class="container">
+
+      
+      <div class="section-head reveal">
+        <span class="section-label">Get to know me</span>
+        <h2 class="section-title">About <span class="accent">Me</span></h2>
+      </div>
+
+      <div class="about-grid">
+
+        
+        <div class="about-img-wrap reveal">
+          <div class="about-img-frame">
+            <img src="images/my_photo.png" alt="Golam Muktadir" class="about-img" loading="lazy" />
+          </div>
+          
+          <span class="corner-tl" aria-hidden="true"></span>
+          <span class="corner-br" aria-hidden="true"></span>
+        </div>
+
+       
+        <div class="about-text reveal">
+          <h3 class="about-name">Golam Muktadir</h3>
+          <p class="about-role">Web Developer &amp; WordPress Specialist</p>
+
+          <p class="about-desc">
+            I'm a passionate web developer based in <strong>Rangpur, Bangladesh</strong>,
+            dedicated to building clean, high-performance websites that leave a lasting impression.
+            With a strong foundation in front-end technologies and a deep love for WordPress
+            customisation, I bridge the gap between design vision and functional reality.
+          </p>
+          <p class="about-desc">
+            Whether it's crafting pixel-perfect layouts, optimising UX flows, or building custom
+            WordPress themes from scratch, I bring both technical precision and creative thinking
+            to every project. I'm constantly learning, currently levelling up my JavaScript skills
+            and exploring modern UI/UX principles.
+          </p>
+
+          
+          <ul class="about-info" role="list">
+            <li><i class="fa-solid fa-location-dot accent"></i> Rangpur, Bangladesh</li>
+            <li><i class="fa-solid fa-envelope accent"></i> muktadir@example.com</li>
+            <li><i class="fa-solid fa-briefcase accent"></i> Available for Freelance</li>
+          </ul>
+
+          <a href="#contact" class="btn btn-primary">Hire Me <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <section class="skills section" id="skills" aria-label="Skills">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="section-label">What I know</span>
+        <h2 class="section-title">My <span class="accent">Skills</span></h2>
+      </div>
+
+      <div class="skills-grid">
+
+        
+        <div class="skill-card reveal">
+          <div class="skill-header">
+            <span class="skill-name"><i class="fa-brands fa-html5"></i> HTML</span>
+            <span class="skill-pct">98%</span>
+          </div>
+          <div class="skill-bar" role="progressbar" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" data-percent="98"></div>
+          </div>
+        </div>
+
+        <div class="skill-card reveal">
+          <div class="skill-header">
+            <span class="skill-name"><i class="fa-brands fa-css3-alt"></i> CSS</span>
+            <span class="skill-pct">98%</span>
+          </div>
+          <div class="skill-bar" role="progressbar" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" data-percent="98"></div>
+          </div>
+        </div>
+
+        <div class="skill-card reveal">
+          <div class="skill-header">
+            <span class="skill-name"><i class="fa-brands fa-js"></i> JavaScript</span>
+            <span class="skill-pct">70%</span>
+          </div>
+          <div class="skill-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" data-percent="70"></div>
+          </div>
+        </div>
+
+        <div class="skill-card reveal">
+          <div class="skill-header">
+            <span class="skill-name"><i class="fa-brands fa-wordpress"></i> WordPress</span>
+            <span class="skill-pct">78%</span>
+          </div>
+          <div class="skill-bar" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" data-percent="78"></div>
+          </div>
+        </div>
+
+        <div class="skill-card reveal">
+          <div class="skill-header">
+            <span class="skill-name"><i class="fa-solid fa-pen-ruler"></i> UX/UI Design</span>
+            <span class="skill-pct">36%</span>
+          </div>
+          <div class="skill-bar" role="progressbar" aria-valuenow="36" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" data-percent="36"></div>
+          </div>
+        </div>
+
+        <div class="skill-card reveal">
+          <div class="skill-header">
+            <span class="skill-name"><i class="fa-brands fa-github"></i> GitHub</span>
+            <span class="skill-pct">85%</span>
+          </div>
+          <div class="skill-bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" data-percent="85"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="projects section" id="projects" aria-label="Projects">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="section-label">What I've built</span>
+        <h2 class="section-title">My <span class="accent">Projects</span></h2>
+      </div>
+
+      <div class="projects-grid">
+
+        
+        <article class="project-card reveal">
+          <div class="project-top">
+            <div class="project-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="project-links">
+              <a href="#" class="project-link" aria-label="View live project"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <a href="#" class="project-link" aria-label="View source code"><i class="fa-brands fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-title">ShopEase — E-Commerce Site</h3>
+          <p class="project-desc">
+            A fully responsive e-commerce front end with product filtering, cart
+            functionality, and smooth checkout UI — built with HTML, CSS, and vanilla JS.
+          </p>
+          <ul class="project-tags" role="list">
+            <li>HTML</li><li>CSS</li><li>JavaScript</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-sm">View Project <i class="fa-solid fa-arrow-right"></i></a>
+        </article>
+
+       
+        <article class="project-card reveal">
+          <div class="project-top">
+            <div class="project-icon"><i class="fa-brands fa-wordpress"></i></div>
+            <div class="project-links">
+              <a href="#" class="project-link" aria-label="View live project"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <a href="#" class="project-link" aria-label="View source code"><i class="fa-brands fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-title">Lumina — WordPress Theme</h3>
+          <p class="project-desc">
+            A custom-built WordPress theme for creative agencies, featuring a dark aesthetic,
+            ACF-powered portfolio, and WooCommerce integration for seamless client use.
+          </p>
+          <ul class="project-tags" role="list">
+            <li>WordPress</li><li>PHP</li><li>ACF</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-sm">View Project <i class="fa-solid fa-arrow-right"></i></a>
+        </article>
+
+        <!-- Project Card 3 -->
+        <article class="project-card reveal">
+          <div class="project-top">
+            <div class="project-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div class="project-links">
+              <a href="#" class="project-link" aria-label="View live project"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <a href="#" class="project-link" aria-label="View source code"><i class="fa-brands fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-title">TaskFlow — Productivity App</h3>
+          <p class="project-desc">
+            A clean task-management web app with drag-and-drop boards, local-storage
+            persistence, and a minimal UI designed for distraction-free productivity.
+          </p>
+          <ul class="project-tags" role="list">
+            <li>HTML</li><li>CSS</li><li>JavaScript</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-sm">View Project <i class="fa-solid fa-arrow-right"></i></a>
+        </article>
+
+        <!-- Project Card 4 -->
+        <article class="project-card reveal">
+          <div class="project-top">
+            <div class="project-icon"><i class="fa-solid fa-palette"></i></div>
+            <div class="project-links">
+              <a href="#" class="project-link" aria-label="View live project"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <a href="#" class="project-link" aria-label="View source code"><i class="fa-brands fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-title">Artfolio — Designer Portfolio</h3>
+          <p class="project-desc">
+            A one-page portfolio template for freelance designers with animated scroll
+            reveals, filterable gallery grid, and a contact form — optimised for Lighthouse 100.
+          </p>
+          <ul class="project-tags" role="list">
+            <li>HTML</li><li>CSS</li><li>UX/UI</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-sm">View Project <i class="fa-solid fa-arrow-right"></i></a>
+        </article>
+
+      </div><!-- /projects-grid -->
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section class="contact section" id="contact" aria-label="Contact">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="section-label">Let's talk</span>
+        <h2 class="section-title">Contact <span class="accent">Me</span></h2>
+      </div>
+
+      <div class="contact-grid">
+
+        <!-- Info column -->
+        <div class="contact-info reveal">
+          <h3>I'd love to hear from you!</h3>
+          <p>
+            Have a project in mind, a question, or just want to say hello?
+            Drop me a message and I'll get back to you as soon as possible.
+          </p>
+
+          <ul class="contact-details" role="list">
+            <li>
+              <span class="ci-icon"><i class="fa-solid fa-location-dot"></i></span>
+              <div>
+                <strong>Location</strong>
+                <span>Rangpur, Bangladesh</span>
+              </div>
+            </li>
+            <li>
+              <span class="ci-icon"><i class="fa-solid fa-envelope"></i></span>
+              <div>
+                <strong>Email</strong>
+                <span>muktadir@example.com</span>
+              </div>
+            </li>
+            <li>
+              <span class="ci-icon"><i class="fa-solid fa-phone"></i></span>
+              <div>
+                <strong>Phone</strong>
+                <span>+880 1XXX-XXXXXX</span>
+              </div>
+            </li>
+          </ul>
+
+          <!-- Social row -->
+          <div class="contact-social">
+            <a href="#" class="social-icon" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="#" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <!-- Form column -->
+        <div class="contact-form-wrap reveal">
+          <!-- 
+            NOTE: This is a front-end only form.
+            To make it functional, connect it to a service like Formspree or EmailJS.
+          -->
+          <form class="contact-form" id="contactForm" novalidate>
+
+            <div class="form-group">
+              <label for="name">Your Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="e.g. Rahim Uddin"
+                required
+                autocomplete="name"
+              />
+              <span class="field-error" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@example.com"
+                required
+                autocomplete="email"
+              />
+              <span class="field-error" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Tell me about your project…"
+                required
+              ></textarea>
+              <span class="field-error" aria-live="polite"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+              <i class="fa-solid fa-paper-plane"></i> Send Message
+            </button>
+
+            <!-- Success / error feedback -->
+            <div class="form-feedback" id="formFeedback" aria-live="assertive"></div>
+
+          </form>
+        </div>
+
+      </div><!-- /contact-grid -->
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container footer-inner">
+
+      <div class="footer-brand">
+        <a href="#home" class="nav-logo">
+          <span class="logo-bracket">&lt;</span>Muktadir<span class="logo-bracket">/&gt;</span>
+        </a>
+        <p>Web Developer &amp; WordPress Enthusiast</p>
+      </div>
+
+      <!-- Footer nav -->
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <!-- Social icons -->
+      <div class="footer-social">
+        <a href="#" class="social-icon" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="#" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      </div>
+
+    </div>
+
+    <div class="footer-copy">
+      <p>&copy; <span id="year"></span> Golam Muktadir. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Back-to-top button -->
+  <button class="back-top" id="backTop" aria-label="Back to top">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <!-- Main Script -->
+  <script src="script.js"></script>
+</body>
+</html>

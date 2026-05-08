@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Street Racer</title>
+ 
+  <!-- ============================================================
+       SECTION 1: CSS STYLING
+       All visual design lives here — layout, colors, animations.
+       ============================================================ -->
+  <style>
+    /* ---------- Reset & Page Layout ---------- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    body {
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #fff;
+    }
+ 
+    h1 {
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+      color: #f5c542;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+ 
+    /* ---------- HUD (Heads-Up Display) ---------- */
+    #hud {
+      display: flex;
+      justify-content: space-between;
+      width: 360px;
+      padding: 8px 12px;
+      background: #1a1a1a;
+      border-radius: 8px 8px 0 0;
+      border: 1px solid #333;
+      border-bottom: none;
+    }
+ 
+    #hud span {
+      font-size: 14px;
+      color: #aaa;
+    }
+ 
+    #hud b {
+      color: #f5c542;
+      font-size: 15px;
+    }
+ 
+    /* ---------- Game Canvas (the road area) ---------- */
+    #game-canvas {
+      position: relative;  /* children use absolute positioning inside here */
+      width: 360px;
+      height: 520px;
+      background: #2a2a2a;  /* asphalt colour */
+      overflow: hidden;      /* hides cars going off screen edges */
+      border: 1px solid #333;
+      outline: none;         /* remove blue focus ring */
+    }
+ 
+    /* ---------- Lane Markings ---------- */
+    /*
+      These white/yellow dashed lines scroll downward via CSS animation.
+      JavaScript creates them and updates animation-duration for speed changes.
+    */
+    .lane-divider {
+      position: absolute;
+      width: 6px;
+      background: #e8e049;
+      border-radius: 3px;
+      animation: scroll-down linear infinite;
+    }
+ 
+    /* Keyframe: starts above canvas, ends below */
+    @keyframes scroll-down {
+      from { top: -60px; }
+      to   { top: 580px; }
+    }
+ 
+    /* Road edge lines (static visual guides) */
+    #road-edge-left, #road-edge-right {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 4px;
+      background: #fff;
+      opacity: 0.15;
+    }
+    #road-edge-left  { left: 18px; }
+    #road-edge-right { right: 18px; }
+ 
+    /* ---------- Player Car ---------- */
+    #player {
+      position: absolute;
+      width: 44px;
+      height: 72px;
+      z-index: 10;  /* above enemies */
+      /* JS sets left/bottom at runtime */
+    }
+ 
+    /* ---------- Enemy Cars ---------- */
+    /*
+      Each enemy is created by JS and given class="enemy".
+      They are positioned absolutely and moved by JS each frame.
+    */
+    .enemy {
+      position: absolute;
+      width: 44px;
+      height: 72px;
+      z-index: 9;
+    }
+ 
+    /* ---------- Overlay (Start / Game Over screens) ---------- */
+    #overlay {
+      position: absolute;
+      inset: 0;  /* shorthand for top/right/bottom/left: 0 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 20;
+      gap: 6px;
+      padding: 20px;
+    }
+ 
+    #overlay h2 {
+      font-size: 2rem;
+      color: #f5c542;
+      letter-spacing: 2px;
+    }
+ 
+    #overlay p {
+      font-size: 14px;
+      color: #bbb;
+      text-align: center;
+      line-height: 1.6;
+    }
+ 
+    #overlay .score-display {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 8px 0;
+    }
+ 
+    #overlay button {
+      margin-top: 12px;
+      padding: 11px 36px;
+      font-size: 15px;
+      font-weight: 600;
+      background: #f5c542;
+      color: #111;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.15s;
+    }
+ 
+    #overlay button:hover  { background: #ffd74d; }
+    #overlay button:active { transform: scale(0.97); }
+ 
+    /* ---------- Controls hint bar ---------- */
+    #controls-hint {
+      width: 360px;
+      padding: 7px 12px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+ 
+<body>
+ 
+  <!-- ============================================================
+       SECTION 2: HTML STRUCTURE
+       Simple skeleton — the JS fills in the cars dynamically.
+       ============================================================ -->
+  <h1>🏁 Street Racer</h1>
+ 
+  <!-- HUD: score / speed / best score -->
+  <div id="hud">
+    <span>Score: <b id="score-val">0</b></span>
+    <span>Speed: <b id="speed-val">1.0x</b></span>
+    <span>Best: <b id="best-val">0</b></span>
+  </div>
+ 
+  <!-- Road container — all game elements go inside -->
+  <div id="game-canvas" tabindex="0">
+ 
+    <!-- Static road edge lines -->
+    <div id="road-edge-left"></div>
+    <div id="road-edge-right"></div>
+ 
+    <!-- Player car (SVG inline for crisp scaling) -->
+    <div id="player">
+      <!-- Blue player car viewed from top-down -->
+      <svg viewBox="0 0 44 72" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+        <rect x="6" y="8" width="32" height="56" rx="8" fill="#3B82F6"/>
+        <rect x="9" y="14" width="26" height="20" rx="4" fill="#93C5FD"/> <!-- windscreen -->
+        <rect x="8" y="4"  width="11" height="8" rx="2" fill="#FBBF24"/> <!-- headlights -->
+        <rect x="25" y="4" width="11" height="8" rx="2" fill="#FBBF24"/>
+        <rect x="8" y="62" width="11" height="8" rx="2" fill="#374151"/> <!-- rear wheels -->
+        <rect x="25" y="62" width="11" height="8" rx="2" fill="#374151"/>
+        <rect x="2" y="20"  width="7" height="14" rx="3" fill="#1D4ED8"/> <!-- side mirrors -->
+        <rect x="35" y="20" width="7" height="14" rx="3" fill="#1D4ED8"/>
+        <rect x="17" y="58" width="10" height="5" rx="2" fill="#F87171"/>  <!-- brake light -->
+      </svg>
+    </div>
+ 
+    <!-- Start / Game Over overlay (toggled by JS) -->
+    <div id="overlay">
+      <h2>STREET RACER</h2>
+      <p>Dodge the oncoming traffic!<br>Use <strong>← →</strong> arrow keys to steer.</p>
+      <button id="action-btn">START GAME</button>
+    </div>
+ 
+  </div><!-- /#game-canvas -->
+ 
+  <div id="controls-hint">← → Arrow Keys to Move &nbsp;|&nbsp; Avoid All Traffic</div>
+ 
+ 
+  <!-- ============================================================
+       SECTION 3: JAVASCRIPT LOGIC
+       Everything is wrapped in an IIFE (Immediately Invoked Function
+       Expression) to avoid polluting the global scope.
+       ============================================================ -->
+  <script>
+  (function () {
+    'use strict';
+ 
+    // ── CONSTANTS ──────────────────────────────────────────────
+    const ROAD_W    = 360;   // canvas pixel width
+    const ROAD_H    = 520;   // canvas pixel height
+    const CAR_W     = 44;    // car element width  (px)
+    const CAR_H     = 72;    // car element height (px)
+    const PADDING   = 12;    // min distance from road edge
+ 
+    /*
+      Lane centre X positions (5 lanes).
+      Enemies snap to one of these when spawning.
+    */
+    const LANE_CENTERS = [38, 98, 158, 218, 278];
+ 
+    // Enemy car colour themes (body, window, headlight, accent)
+    const ENEMY_THEMES = [
+      { body: '#EF4444', win: '#FCA5A5', hd: '#FCD34D', acc: '#B91C1C' }, // red
+      { body: '#10B981', win: '#6EE7B7', hd: '#FCD34D', acc: '#065F46' }, // green
+      { body: '#F59E0B', win: '#FDE68A', hd: '#FBBF24', acc: '#92400E' }, // amber
+      { body: '#8B5CF6', win: '#C4B5FD', hd: '#FCD34D', acc: '#5B21B6' }, // purple
+      { body: '#EC4899', win: '#F9A8D4', hd: '#FCD34D', acc: '#9D174D' }, // pink
+      { body: '#06B6D4', win: '#A5F3FC', hd: '#FCD34D', acc: '#0E7490' }, // cyan
+    ];
+ 
+    // ── DOM REFERENCES ─────────────────────────────────────────
+    const canvas    = document.getElementById('game-canvas');
+    const overlay   = document.getElementById('overlay');
+    const actionBtn = document.getElementById('action-btn');
+    const scoreEl   = document.getElementById('score-val');
+    const speedEl   = document.getElementById('speed-val');
+    const bestEl    = document.getElementById('best-val');
+    const playerEl  = document.getElementById('player');
+ 
+    // ── GAME STATE VARIABLES ───────────────────────────────────
+    let gameState    = 'start';  // 'start' | 'running' | 'gameover'
+    let score        = 0;
+    let best         = 0;
+    let speed        = 1.0;       // speed multiplier (increases over time)
+    let frameId      = null;      // handle for cancelAnimationFrame
+    let lastTime     = 0;         // timestamp of previous frame (for delta-time)
+    let spawnTimer   = 0;         // counts frames since last spawn
+    let spawnInterval = 90;       // frames between spawns (decreases = harder)
+ 
+    // Player object — tracks logical position
+    let player = { x: 158, y: ROAD_H - 40 - CAR_H };
+ 
+    // Enemies array — each entry: { el, x, y }
+    let enemies = [];
+ 
+    // Lane mark DOM elements
+    let laneMarks = [];
+ 
+    // Pressed keys map  (true = currently held down)
+    let keys = {};
+ 
+    // ── HELPER: Build enemy car SVG markup ─────────────────────
+    /**
+     * makeEnemySVG(theme)
+     * Returns an SVG string for a top-down enemy car.
+     * The car faces DOWN (toward the player) — headlights at bottom.
+     */
+    function makeEnemySVG(t) {
+      return `
+        <svg viewBox="0 0 44 72" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+          <rect x="6" y="8" width="32" height="56" rx="8" fill="${t.body}"/>
+          <rect x="9" y="36" width="26" height="18" rx="4" fill="${t.win}"/>
+          <rect x="8" y="62" width="11" height="8" rx="2" fill="${t.hd}"/>
+          <rect x="25" y="62" width="11" height="8" rx="2" fill="${t.hd}"/>
+          <rect x="8" y="4"  width="11" height="8" rx="2" fill="#1f2937"/>
+          <rect x="25" y="4" width="11" height="8" rx="2" fill="#1f2937"/>
+          <rect x="2" y="20"  width="7" height="14" rx="3" fill="${t.acc}"/>
+          <rect x="35" y="20" width="7" height="14" rx="3" fill="${t.acc}"/>
+        </svg>`;
+    }
+ 
+    // ── LANE MARKINGS ──────────────────────────────────────────
+    /**
+     * initLaneMarks()
+     * Creates the scrolling dashed centre-line dividers.
+     * We place dividers at x=119 and x=239 (between 5 lanes).
+     * Each divider is a thin div animated via CSS.
+     */
+    function initLaneMarks() {
+      // Remove any existing marks
+      laneMarks.forEach(m => m.remove());
+      laneMarks = [];
+ 
+      const dividerXs = [119, 239]; // pixel positions of dividers
+ 
+      dividerXs.forEach(x => {
+        // Stagger 5 marks vertically so the road looks continuous
+        for (let i = 0; i < 5; i++) {
+          const el = document.createElement('div');
+          el.className = 'lane-divider';
+          el.style.left   = x + 'px';
+          el.style.height = '40px';
+          el.style.top    = (-60 + i * 116) + 'px';
+          el.style.animationDuration = getDividerDuration() + 's';
+          canvas.appendChild(el);
+          laneMarks.push(el);
+        }
+      });
+    }
+ 
+    /** Returns the CSS animation duration for lane marks based on current speed. */
+    function getDividerDuration() {
+      return (2.2 / speed).toFixed(2);
+    }
+ 
+    /** Sync lane mark scroll speed to current game speed. */
+    function updateLaneMarkSpeed() {
+      const dur = getDividerDuration() + 's';
+      laneMarks.forEach(m => { m.style.animationDuration = dur; });
+    }
+ 
+    // ── OBSTACLE CREATION ──────────────────────────────────────
+    /**
+     * spawnEnemy()
+     * Creates one enemy car at the top of a random lane.
+     * The enemy object is added to the enemies[] array.
+     */
+    function spawnEnemy() {
+      // Pick random lane and colour theme
+      const laneIdx   = Math.floor(Math.random() * LANE_CENTERS.length);
+      const themeIdx  = Math.floor(Math.random() * ENEMY_THEMES.length);
+      const theme     = ENEMY_THEMES[themeIdx];
+ 
+      // Calculate pixel X so car is centred in lane
+      const x = LANE_CENTERS[laneIdx] - CAR_W / 2;
+ 
+      // Create DOM element
+      const el = document.createElement('div');
+      el.className    = 'enemy';
+      el.style.left   = x + 'px';
+      el.style.top    = '-72px';  // start just above the canvas
+      el.innerHTML    = makeEnemySVG(theme);
+      canvas.appendChild(el);
+ 
+      enemies.push({ el, x, y: -72 });
+    }
+ 
+    // ── COLLISION DETECTION ────────────────────────────────────
+    /**
+     * checkCollision()
+     * Compares the player's bounding box against every enemy.
+     * Uses AABB (Axis-Aligned Bounding Box) — the simplest and
+     * fastest method for rectangular objects.
+     *
+     * Two rectangles overlap when ALL four of these are true:
+     *   A.left   < B.right
+     *   A.right  > B.left
+     *   A.top    < B.bottom
+     *   A.bottom > B.top
+     *
+     * We shrink the boxes slightly (inset) for a forgiving feel.
+     */
+    function checkCollision() {
+      const inset = 6;  // shrink hitbox by this many px on each side
+ 
+      const px1 = player.x + inset;
+      const py1 = player.y + inset;
+      const px2 = player.x + CAR_W - inset;
+      const py2 = player.y + CAR_H - inset;
+ 
+      for (const e of enemies) {
+        const ex1 = e.x + inset;
+        const ey1 = e.y + inset;
+        const ex2 = e.x + CAR_W - inset;
+        const ey2 = e.y + CAR_H - inset;
+ 
+        if (px1 < ex2 && px2 > ex1 && py1 < ey2 && py2 > ey1) {
+          return true;  // collision!
+        }
+      }
+      return false;
+    }
+ 
+    // ── PLAYER MOVEMENT ────────────────────────────────────────
+    /**
+     * movePlayer(dt)
+     * Moves the player car left/right based on held keys.
+     * dt = delta-time multiplier — ensures consistent speed
+     * regardless of frame rate.
+     */
+    function movePlayer(dt) {
+      const moveAmount = 4.5 * dt;  // pixels per frame at 60fps
+ 
+      if (keys['ArrowLeft']) {
+        player.x = Math.max(PADDING, player.x - moveAmount);
+      }
+      if (keys['ArrowRight']) {
+        player.x = Math.min(ROAD_W - CAR_W - PADDING, player.x + moveAmount);
+      }
+ 
+      // Apply to DOM (round to avoid sub-pixel jitter)
+      playerEl.style.left = Math.round(player.x) + 'px';
+    }
+ 
+    // ── SCORE HANDLING ─────────────────────────────────────────
+    /**
+     * updateScore()
+     * Increments the score each frame (survives = points).
+     * Gradually increases speed every 150 frames.
+     * Decreases spawn interval (more enemies) as score grows.
+     */
+    function updateScore() {
+      score++;
+      scoreEl.textContent = score;
+ 
+      // Speed formula: starts at 1.0, grows smoothly
+      speed = 1.0 + score / 600;
+      speedEl.textContent = speed.toFixed(1) + 'x';
+ 
+      // Increase difficulty every 150 frames
+      if (score % 150 === 0 && spawnInterval > 38) {
+        spawnInterval = Math.max(38, spawnInterval - 6);
+      }
+ 
+      updateLaneMarkSpeed();
+    }
+ 
+    // ── GAME RESET ─────────────────────────────────────────────
+    /**
+     * resetGame()
+     * Wipes all enemies, resets counters, re-positions player.
+     * Called before every new game.
+     */
+    function resetGame() {
+      // Remove all enemy DOM elements
+      enemies.forEach(e => e.el.remove());
+      enemies = [];
+ 
+      // Reset player position
+      player.x = 158;
+      player.y = ROAD_H - 40 - CAR_H;
+      playerEl.style.left   = player.x + 'px';
+      playerEl.style.bottom = '40px';
+      playerEl.style.top    = '';
+ 
+      // Reset counters
+      score        = 0;
+      speed        = 1.0;
+      spawnTimer   = 0;
+      spawnInterval = 90;
+      keys         = {};
+ 
+      scoreEl.textContent = '0';
+      speedEl.textContent = '1.0x';
+ 
+      // Rebuild lane marks at correct speed
+      initLaneMarks();
+    }
+ 
+    // ── OVERLAY / GAME STATE ───────────────────────────────────
+    /**
+     * showOverlay(type)
+     * Renders either the 'start' screen or the 'gameover' screen.
+     * The same overlay div is reused — innerHTML is replaced.
+     */
+    function showOverlay(type) {
+      overlay.style.display = 'flex';
+ 
+      if (type === 'start') {
+        overlay.innerHTML = `
+          <h2>STREET RACER</h2>
+          <p>Dodge the oncoming traffic!<br>Use <strong>← →</strong> arrow keys to steer.</p>
+          <button id="action-btn">START GAME</button>`;
+      } else {
+        // Update best score
+        if (score > best) {
+          best = score;
+          bestEl.textContent = best;
+        }
+        overlay.innerHTML = `
+          <h2>GAME OVER</h2>
+          <p>Your score</p>
+          <div class="score-display">${score}</div>
+          ${score === best ? '<p style="color:#f5c542;font-size:13px;">🏆 New Best!</p>' : `<p>Best: ${best}</p>`}
+          <button id="action-btn">PLAY AGAIN</button>`;
+      }
+ 
+      // Re-attach listener since innerHTML replaced the button
+      document.getElementById('action-btn').addEventListener('click', startGame);
+    }
+ 
+    function hideOverlay() {
+      overlay.style.display = 'none';
+    }
+ 
+    // ── START GAME ─────────────────────────────────────────────
+    function startGame() {
+      resetGame();
+      hideOverlay();
+      gameState = 'running';
+      lastTime  = performance.now();
+      cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(gameLoop);
+      canvas.focus();
+    }
+ 
+    // ── MAIN GAME LOOP ─────────────────────────────────────────
+    /**
+     * gameLoop(now)
+     * Called ~60 times per second by requestAnimationFrame.
+     * Sequence each frame:
+     *   1. Compute delta time
+     *   2. Update score + speed
+     *   3. Move player
+     *   4. Spawn enemy if timer fires
+     *   5. Move all enemies downward
+     *   6. Remove off-screen enemies
+     *   7. Check for collision → game over
+     *   8. Schedule next frame
+     */
+    function gameLoop(now) {
+      if (gameState !== 'running') return;
+ 
+      // Delta time: ratio of actual frame time to ideal 16.67ms (60fps)
+      // Capped at 3 to prevent giant jumps after tab-switching
+      const dt = Math.min((now - lastTime) / 16.67, 3);
+      lastTime = now;
+ 
+      // 1. Score & speed
+      updateScore();
+ 
+      // 2. Move player
+      movePlayer(dt);
+ 
+      // 3. Spawn enemies
+      spawnTimer++;
+      if (spawnTimer >= spawnInterval) {
+        spawnEnemy();
+        spawnTimer = 0;
+      }
+ 
+      // 4. Move enemies + remove off-screen ones
+      const enemySpeed = 3.0 * speed * dt;
+      enemies = enemies.filter(e => {
+        e.y += enemySpeed;
+        e.el.style.top = Math.round(e.y) + 'px';
+ 
+        if (e.y > ROAD_H + 20) {
+          e.el.remove();  // clean up DOM
+          return false;   // remove from array
+        }
+        return true;
+      });
+ 
+      // 5. Collision check — ends the game if hit
+      if (checkCollision()) {
+        gameState = 'gameover';
+        // Short delay so the collision is visible before overlay appears
+        setTimeout(() => showOverlay('gameover'), 100);
+        return;  // stop loop
+      }
+ 
+      // 6. Schedule next frame
+      frameId = requestAnimationFrame(gameLoop);
+    }
+ 
+    // ── INPUT HANDLING ─────────────────────────────────────────
+    /*
+      We track keydown/keyup globally so the player doesn't need
+      the canvas to be focused.
+      preventDefault stops the page from scrolling with arrow keys.
+    */
+    document.addEventListener('keydown', e => {
+      if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+        e.preventDefault();
+      }
+      keys[e.key] = true;
+    });
+ 
+    document.addEventListener('keyup', e => {
+      keys[e.key] = false;
+    });
+ 
+    // Click canvas to focus it (in case keyboard isn't responding)
+    canvas.addEventListener('click', () => canvas.focus());
+ 
+    // ── INIT ───────────────────────────────────────────────────
+    // Build lane marks and show start screen on page load
+    initLaneMarks();
+    showOverlay('start');
+ 
+  })(); // end IIFE
+  </script>
+ 
+</body>
+</html>
